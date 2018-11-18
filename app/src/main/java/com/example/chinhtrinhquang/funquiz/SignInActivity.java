@@ -2,6 +2,7 @@ package com.example.chinhtrinhquang.funquiz;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,23 +14,43 @@ import android.widget.Toast;
 
 public class SignInActivity extends AppCompatActivity {
 
-    EditText username;
-    EditText passwd;
+    EditText txtUsername;
+    EditText txtPassword;
     Button btnSignIn;
-
+    Database database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_in);
         Inflate();
-
+        String DB_Path = "/data/data/com.example.chinhtrinhquang.funquiz/databases/";
+        String Database_Name = "xxx.sqlite";
+        database = new Database(this,Database_Name,null,1,DB_Path);
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), R.string.logged_in, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplication(), QuizAcitivity.class);
-                startActivity(intent);
-                //finish();
+                Toast.makeText(getContext(),"Logging in",Toast.LENGTH_SHORT).show();
+                String pw = txtPassword.getText().toString();
+                String us = txtUsername.getText().toString();
+                if(us.length()==0 || pw.length()==0){
+                    Toast.makeText(getContext(),"Fields cannot be null",Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    String sql = "Select * from ACCOUNT where USERNAME = '" + us + "' and "+"PASSWORD = '"+pw+"'";
+                    Cursor data = database.getData(sql);
+                    if (data.getCount() >=1){
+                        Toast.makeText(getContext(),"Loggin successfully",Toast.LENGTH_SHORT).show();
+                        data.close();
+
+                        Intent intent = new Intent(getApplication(), QuizAcitivity.class);
+                        startActivity(intent);
+                    }else{
+                        data.close();
+                        Toast.makeText(getContext(),"Loggin unsuccessfully",Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
             }
         });
     }
@@ -37,14 +58,10 @@ public class SignInActivity extends AppCompatActivity {
     Context getContext() {return this;}
 
     void Inflate() {
-        username = (EditText)findViewById(R.id.txtUsername);
-        passwd = (EditText)findViewById(R.id.txtPassword);
+        txtUsername = (EditText)findViewById(R.id.txtUsername);
+        txtPassword = (EditText)findViewById(R.id.txtPassword);
         btnSignIn = (Button)findViewById(R.id.btnSignIn);
     }
-<<<<<<< Updated upstream
-}
-=======
-
 
 }
->>>>>>> Stashed changes
+
