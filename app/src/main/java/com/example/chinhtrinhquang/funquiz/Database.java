@@ -13,8 +13,14 @@ import java.io.OutputStream;
 
 public class Database extends SQLiteOpenHelper{
     static SQLiteDatabase sqliteDataBase;
-    public Database(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public Context context;
+    public String DB_PATH;
+    public String DATABASE_NAME;
+    public Database(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, String DB_PATH) {
         super(context, name, factory, version);
+        this.context = context;
+        this.DATABASE_NAME = name;
+        this.DB_PATH = DB_PATH;
     }
 
 
@@ -28,7 +34,20 @@ public class Database extends SQLiteOpenHelper{
         SQLiteDatabase database = getReadableDatabase();
         return database.rawQuery(sql, null);
     }
-    public boolean checkDataBase(String DB_PATH,String DATABASE_NAME ){
+
+    public void createDataBase() throws IOException{
+        //check if the database exists
+        boolean databaseExist = checkDataBase();
+
+        if(databaseExist){
+            // Do Nothing.
+        }else{
+            this.getWritableDatabase();
+            copyDataBase();
+        }// end if else dbExist
+    } // end createDataBase().
+
+    public boolean checkDataBase(){
         File databaseFile = new File(DB_PATH + DATABASE_NAME);
         return databaseFile.exists();
     }
@@ -36,7 +55,7 @@ public class Database extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
     }
-    private void copyDataBase(Context context,String DB_PATH,String DATABASE_NAME ) throws IOException {
+    private void copyDataBase() throws IOException {
         //Open your local db as the input stream
         InputStream myInput = context.getAssets().open(DATABASE_NAME);
         // Path to the just created empty db
