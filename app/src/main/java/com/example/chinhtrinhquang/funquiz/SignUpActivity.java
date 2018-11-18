@@ -33,7 +33,11 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String cfpw = txtConfirmPassword.getText().toString();
                 String pw = txtPassword.getText().toString();
-                if(cfpw.equals(pw)){
+                String us = txtUsername.getText().toString();
+                if(us.length()==0 || pw.length()==0 || cfpw.length()==0){
+                    Toast.makeText(getContext(),"Fields cannot be null",Toast.LENGTH_SHORT);
+                }
+                else if(cfpw.equals(pw)){
                     String sql = "Select * from ACCOUNT where USERNAME = '" + txtUsername.getText().toString()+"'";
 
                     Cursor getData = database.getData(sql);
@@ -55,10 +59,6 @@ public class SignUpActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
-
     }
     void Inflate(){
 

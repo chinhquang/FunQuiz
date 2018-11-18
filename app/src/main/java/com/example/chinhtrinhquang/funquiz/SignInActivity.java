@@ -41,4 +41,10 @@ public class SignInActivity extends AppCompatActivity {
         passwd = (EditText)findViewById(R.id.txtPassword);
         btnSignIn = (Button)findViewById(R.id.btnSignIn);
     }
+<<<<<<< Updated upstream
 }
+=======
+
+
+}
+>>>>>>> Stashed changes
