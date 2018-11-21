@@ -17,6 +17,7 @@ public class SignInActivity extends AppCompatActivity {
     EditText txtUsername;
     EditText txtPassword;
     Button btnSignIn;
+    Button btnBack;
     Database database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class SignInActivity extends AppCompatActivity {
                         Toast.makeText(getContext(),"Loggin successfully",Toast.LENGTH_SHORT).show();
                         data.close();
 
-                        Intent intent = new Intent(getApplication(), QuizAcitivity.class);
+                        Intent intent = new Intent(getApplication(), OptionsActivity.class);
                         startActivity(intent);
                     }else{
                         data.close();
@@ -53,6 +54,14 @@ public class SignInActivity extends AppCompatActivity {
 
             }
         });
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplication(), MenuActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     Context getContext() {return this;}
@@ -61,6 +70,7 @@ public class SignInActivity extends AppCompatActivity {
         txtUsername = (EditText)findViewById(R.id.txtUsername);
         txtPassword = (EditText)findViewById(R.id.txtPassword);
         btnSignIn = (Button)findViewById(R.id.btnSignIn);
+        btnBack = (Button) findViewById(R.id.btnBack);
     }
 
 }
