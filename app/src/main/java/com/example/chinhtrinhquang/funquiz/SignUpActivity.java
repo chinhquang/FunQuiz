@@ -27,7 +27,7 @@ public class SignUpActivity extends AppCompatActivity {
         String Database_Name = "xxx.sqlite";
         database = new Database(this,Database_Name,null,1,DB_Path);
 
-        database.queryData("CREATE TABLE IF NOT EXISTS ACCOUNT(ID INTEGER PRIMARY KEY AUTOINCREMENT,USERNAME text(20), PASSWORD text(20))");
+        database.queryData("CREATE TABLE IF NOT EXISTS ACCOUNT(ID INTEGER PRIMARY KEY AUTOINCREMENT,USERNAME text(20), PASSWORD text(20), SCORE INTEGER)");
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,7 +47,7 @@ public class SignUpActivity extends AppCompatActivity {
                     }else {
 
                         getData.close();
-                        sql = "INSERT INTO ACCOUNT(USERNAME,PASSWORD) VALUES ('"+txtUsername.getText().toString()+ "','" + txtPassword.getText().toString()+"')";
+                        sql = "INSERT INTO ACCOUNT(USERNAME,PASSWORD,SCORE) VALUES ('"+txtUsername.getText().toString()+ "','" + txtPassword.getText().toString()+"',0)";
                         database.queryData(sql);
                         Toast.makeText(getContext(),"Sign up successfully",Toast.LENGTH_LONG).show();
                         Intent i = new Intent(getContext(),SignInActivity.class);
