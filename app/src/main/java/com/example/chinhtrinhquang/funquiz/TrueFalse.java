@@ -12,6 +12,10 @@ public class TrueFalse extends Object {
         mTrueQuestion = number;
     }
 
+    public TrueFalse(String question, int key) {
+
+    }
+
     public int getQuestion() {
         return mQuestion;
     }
