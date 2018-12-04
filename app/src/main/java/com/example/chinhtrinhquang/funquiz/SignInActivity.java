@@ -13,7 +13,8 @@ import android.widget.Toast;
 
 
 public class SignInActivity extends AppCompatActivity {
-
+    public static String username;
+    public static String password;
     EditText txtUsername;
     EditText txtPassword;
     Button btnSignIn;
@@ -40,6 +41,8 @@ public class SignInActivity extends AppCompatActivity {
                     String sql = "Select * from ACCOUNT where USERNAME = '" + us + "' and "+"PASSWORD = '"+pw+"'";
                     Cursor data = database.getData(sql);
                     if (data.getCount() >=1){
+                        SignInActivity.password = pw;
+                        SignInActivity.username = us;
                         Toast.makeText(getContext(),"Loggin successfully",Toast.LENGTH_SHORT).show();
                         data.close();
 

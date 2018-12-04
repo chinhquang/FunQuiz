@@ -2,6 +2,7 @@ package com.example.chinhtrinhquang.funquiz;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -67,6 +68,7 @@ public class QuizAcitivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toast.makeText(this,"username : "+SignInActivity.username + "\npassword :" + SignInActivity.password,Toast.LENGTH_LONG).show();
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
 
