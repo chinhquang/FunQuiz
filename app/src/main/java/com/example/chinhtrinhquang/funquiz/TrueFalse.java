@@ -4,10 +4,10 @@ package com.example.chinhtrinhquang.funquiz;
 public class TrueFalse extends Object {
 
 
-    private int mQuestion;
+    private Question mQuestion;
     private int mTrueQuestion;
 
-    public TrueFalse(int question, int number) {
+    public TrueFalse(Question question, int number) {
         mQuestion = question;
         mTrueQuestion = number;
     }
@@ -16,11 +16,11 @@ public class TrueFalse extends Object {
 
     }
 
-    public int getQuestion() {
-        return mQuestion;
+    public String getQuestion() {
+        return mQuestion.question;
     }
 
-    public void setQuestion(int question) {
+    public void setQuestion(Question question) {
         mQuestion = question;
     }
 

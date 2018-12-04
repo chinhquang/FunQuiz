@@ -1,6 +1,7 @@
 package com.example.chinhtrinhquang.funquiz;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
@@ -20,13 +21,14 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Semaphore;
 
 public class QuizAcitivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
-
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
     private Button mButton1;
@@ -35,30 +37,22 @@ public class QuizAcitivity extends AppCompatActivity {
     private Button mButton4;
     private Button mNextButton;
 
-    private TrueFalse[] mQuestionBank = new TrueFalse[]{
-            new TrueFalse(R.string.question_oceans, 1),
-            new TrueFalse(R.string.question_mideast, 2),
-            new TrueFalse(R.string.question_africa, 2),
-            new TrueFalse(R.string.question_americas, 3),
-            new TrueFalse(R.string.question_asias, 4),
-    };
+    private Question example = new Question("What's the joke","lake1","lake2","lake3","lake4",2,123);
+    private List<TrueFalse> mQuestionBank = new ArrayList<TrueFalse>();
+
 
     private TextView mQuestionTextView;
-
-    private List<Question> questions;
 
     private int mCurrentIndex = 0;
 
     private void updateQuestion() {
-        int question = mQuestionBank[mCurrentIndex].getQuestion();
+        String question = mQuestionBank.get(mCurrentIndex).getQuestion();
         mQuestionTextView.setText(question);
     }
 
     private void checkAnswer(int userPressedTrue) {
-        int answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
-
+        int answerIsTrue = mQuestionBank.get(mCurrentIndex).isTrueQuestion();
         int messageResId = 0;
-
 
         if (userPressedTrue == answerIsTrue) {
             messageResId = R.string.correct_toast;
@@ -66,35 +60,9 @@ public class QuizAcitivity extends AppCompatActivity {
             messageResId = R.string.incorrect_toast;
         }
 
-
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
     }
 
-    public void retrieveDataFromFirebase(DatabaseReference mRef) {
-        //final CountDownLatch done = new CountDownLatch(1);
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot qSnapshot : dataSnapshot.getChildren()) {
-                    try {
-                        Question question = qSnapshot.getValue(Question.class);
-                        Log.d(TAG, question.ToString());
-                        questions.add(question);
-                        Log.d(TAG, "SIZE: " + questions.size());
-                    }
-                    catch (Exception ex) {
-                        Log.d(TAG, ex.getMessage());
-                    }
-                }
-                //done.countDown();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -102,12 +70,73 @@ public class QuizAcitivity extends AppCompatActivity {
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
 
-        questions = new ArrayList<>();
+        final ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Loading data... ");
+        progress.show();
+
+        mQuestionBank.add(new TrueFalse(example, example.correct));
 
         mDatabase = FirebaseDatabase.getInstance().getReference("questions");
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                progress.dismiss();
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot qSnapshot : dataSnapshot.getChildren()) {
+                        try {
+                            Question question = qSnapshot.getValue(Question.class);
+                            Log.d(TAG, question.ToString());
 
-        retrieveDataFromFirebase(mDatabase);
-        Log.d(TAG, "GETTED: " + questions.size());
+                            mQuestionBank.add(new TrueFalse(question, question.correct));
+                            Log.d(TAG, "SIZE: " + mQuestionBank.size());
+                        } catch (Exception ex) {
+                            Log.d(TAG, ex.getMessage());
+                        }
+                    }
+                }
+
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+       /* mDatabase.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                for (DataSnapshot qSnapshot : dataSnapshot.getChildren()) {
+                    try {
+                        Question question = qSnapshot.getValue(Question.class);
+                        Log.d(TAG, question.ToString());
+                        mQuestionBank.add(new TrueFalse(question, question.correct));
+                        Log.d(TAG, "SIZE: " + mQuestionBank.size());
+                    }
+                    catch (Exception ex) {
+                        Log.d(TAG, ex.getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
         if (savedInstanceState != null) {
@@ -121,7 +150,7 @@ public class QuizAcitivity extends AppCompatActivity {
         mButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT).show();
                 checkAnswer(1);
             }
         });
@@ -157,7 +186,7 @@ public class QuizAcitivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.size();
                 updateQuestion();
             }
         });
@@ -167,14 +196,12 @@ public class QuizAcitivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        Log.d(TAG, "ENDED: " + questions.size());
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState)
     {
         super.onSaveInstanceState(savedInstanceState);
-        Log.d(TAG, "ENDED: " + questions.size());
         Log.i(TAG, "onSaveInstantState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
     }
