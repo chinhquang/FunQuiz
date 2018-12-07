@@ -24,6 +24,8 @@ public class TrueFalse extends Object {
         mQuestion = question;
     }
 
+    public Question getQuestionObj() { return mQuestion; }
+
     public int isTrueQuestion() {
         return mTrueQuestion;
     }

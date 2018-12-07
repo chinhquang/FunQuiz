@@ -25,6 +25,9 @@
     <string name="correct_toast">Corect</string>
     <string name="incorrect_toast">Incorrect</string>
     <string name="next_button">Next</string>
+    <string name="pause_button">Pause</string>
+    <string name="ok_button">OK</string>
+    <string name="score_label">Your score:</string>
     <string name="question_oceans">The Pacific Ocean is lager than the Atlantic Ocean</string>
     <string name="question_mideast">The Suez Canal connects the Res Sea and the Indian Ocean</string>
     <string name="question_africa">The source of the Nile River is in Egypt</string>
@@ -35,5 +38,6 @@
     <string name="show_answer_button">Show Answer</string>
     <string name="judgment_toast">Cheating is wrong</string>
     <string name="logged_in">Logged in</string>
+    <string name="back_home">Turning back to menu</string>
 
 </resources>
