@@ -59,5 +59,13 @@ public class Candidate {
         this.cquiz = current;
     }
 
+    Candidate(String id, String uname, String pw)
+    {
+        this.id = id;
+        this.username = uname;
+        this.password = pw;
+        this.score = 0;
+        this.cquiz = 0;
+    }
 
 }

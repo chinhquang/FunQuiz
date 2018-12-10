@@ -33,8 +33,15 @@ public class QuizAcitivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     private DatabaseReference mCandidate;
+
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    static final String STATE_SCORE = "playerScore";
+    static final String STATE_LEVEL = "playerLevel";
+    static final String USER_NAME = "username";
+    static final String USER_PASS = "password";
+    static final String USER_ID = "id";
+
     private Button mButton1;
     private Button mButton2;
     private Button mButton3;
@@ -45,6 +52,7 @@ public class QuizAcitivity extends AppCompatActivity {
     public  int score;
     private int current;
     private boolean correct = false;
+    private String userID;
 
     private Question example = new Question("What's the joke","lake1","lake2","lake3","lake4",2,123);
     private List<TrueFalse> mQuestionBank = new ArrayList<TrueFalse>();
@@ -53,7 +61,7 @@ public class QuizAcitivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private int mCurrentIndex = 0;
-
+    Bundle saved;
     private void updateQuestion() {
         String question = mQuestionBank.get(mCurrentIndex).getQuestion();
         mQuestionTextView.setText(question);
@@ -98,8 +106,9 @@ public class QuizAcitivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("questions");
         mCandidate = FirebaseDatabase.getInstance().getReference("candidates");
 
-        final String userID = UUID.randomUUID().toString();
+        userID = UUID.randomUUID().toString();
         //writeNewCandidate(userID, SignInActivity.username, SignInActivity.password, 0, 0);
+        if (savedInstanceState != null) {saved = savedInstanceState; }
 
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -136,6 +145,7 @@ public class QuizAcitivity extends AppCompatActivity {
 
         mButton1 = (Button) findViewById(R.id.no1);
         mButton1.setText(mQuestionBank.get(mCurrentIndex).getQuestionObj().answer1);
+        Log.d(TAG,"ANSWER1: " +  (mQuestionBank.get(mCurrentIndex).getQuestionObj().getAnswer1()));
         mButton1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -195,7 +205,13 @@ public class QuizAcitivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
                     }
 
-                    if (mCurrentIndex < mQuestionBank.size()) { updateQuestion(); }
+                    if (mCurrentIndex < mQuestionBank.size()) {
+                        updateQuestion();
+                        mButton1.setText(mQuestionBank.get(mCurrentIndex).getQuestionObj().getAnswer1());
+                        mButton2.setText(mQuestionBank.get(mCurrentIndex).getQuestionObj().getAnswer2());
+                        mButton3.setText(mQuestionBank.get(mCurrentIndex).getQuestionObj().getAnswer3());
+                        mButton4.setText(mQuestionBank.get(mCurrentIndex).getQuestionObj().getAnswer4());
+                    }
                 } else  {
                     writeNewCandidate(userID, SignInActivity.username, SignInActivity.password, score, current);
                     //Intent intent = new Intent(getApplication(), Result.class);
@@ -212,8 +228,7 @@ public class QuizAcitivity extends AppCompatActivity {
         mPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                writeNewCandidate(userID, SignInActivity.username, SignInActivity.password, score, current);
-
+                //onSaveInstanceState(savedInstanceState);
             }
         });
     }
@@ -221,7 +236,9 @@ public class QuizAcitivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
+        Log.d(TAG, "onStart called");
+        Log.d(TAG, "SCORE saved: " + score);
+        TackerActivity.activityStarted();
     }
 
     @Override
@@ -230,5 +247,58 @@ public class QuizAcitivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstantState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+
+        // Save the user's current game state
+        savedInstanceState.putInt(STATE_SCORE, score);
+        savedInstanceState.putInt(STATE_LEVEL, current);
+        savedInstanceState.putString(USER_NAME, SignInActivity.username);
+        savedInstanceState.putString(USER_PASS, SignInActivity.password);
+        savedInstanceState.putString(USER_ID, userID);
+    }
+
+    @Override
+    public  void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop called");
+        TackerActivity.activityStopped();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause called");
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.i(TAG, "onRestoreInstantState");
     }
 }
+
+/*
+    static final String STATE_SCORE = "playerScore";
+    static final String STATE_LEVEL = "playerLevel";
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putInt(STATE_SCORE, mCurrentScore);
+        savedInstanceState.putInt(STATE_LEVEL, mCurrentLevel);
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    And when your activity is recreated, you can recover your state from the Bundle:
+
+public void onRestoreInstanceState(Bundle savedInstanceState) {
+        // Always call the superclass so it can restore the view hierarchy
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // Restore state members from saved instance
+        mCurrentScore = savedInstanceState.getInt(STATE_SCORE);
+        mCurrentLevel = savedInstanceState.getInt(STATE_LEVEL);
+        }
+*/

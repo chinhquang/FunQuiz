@@ -82,7 +82,7 @@ public class Question {
 
 
     public String ToString() {
-        return question + " " + correct + " " + id ;
+        return question + " " + correct + " " + id + " " + getAnswer1() + " " + getAnswer2();
     }
 
 }
