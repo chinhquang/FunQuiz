@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -25,9 +24,8 @@
         <activity android:name=".SignInActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".QuizAcitivity" />
-        <activity android:name=".OptionsActivity" />
-        <activity android:name=".Settings" />
-        <activity android:name=".Help"></activity>
+        <activity android:name=".OptionsActivity"></activity>
+        <activity android:name=".Result"></activity>
     </application>
 
 </manifest>
