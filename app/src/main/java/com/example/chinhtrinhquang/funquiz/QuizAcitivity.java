@@ -54,11 +54,13 @@ public class QuizAcitivity extends AppCompatActivity {
     private boolean correct = false;
     private String userID;
 
+    private int count = 1;
     private Question example = new Question("What's the joke","lake1","lake2","lake3","lake4",2,123);
     private List<TrueFalse> mQuestionBank = new ArrayList<TrueFalse>();
 
 
     private TextView mQuestionTextView;
+    private TextView mQuestion;
 
     private int mCurrentIndex = 0;
     Bundle saved;
@@ -140,6 +142,10 @@ public class QuizAcitivity extends AppCompatActivity {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
         }
 
+
+        mQuestion = (TextView) findViewById(R.id.nQuestion);
+        mQuestion.setText("" + count);
+
         updateQuestion();
 
 
@@ -193,19 +199,24 @@ public class QuizAcitivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurrentIndex  < mQuestionBank.size()) {
-                    mCurrentIndex = (mCurrentIndex + 1);
-                    current = mCurrentIndex;
+                // check the answer
+                if (correct) {
+                    score += 5;
+                    Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+                }
 
-                    if (correct) {
-                        score += 5;
-                        Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getApplicationContext(), R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
-                    }
+                // turn to next question
+                if (count  <  20) {
+                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.size();
+                    current = mCurrentIndex;
+                    count++;
+
 
                     if (mCurrentIndex < mQuestionBank.size()) {
+                        mQuestion.setText(""+count);
                         updateQuestion();
                         mButton1.setText(mQuestionBank.get(mCurrentIndex).getQuestionObj().getAnswer1());
                         mButton2.setText(mQuestionBank.get(mCurrentIndex).getQuestionObj().getAnswer2());
@@ -229,6 +240,10 @@ public class QuizAcitivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //onSaveInstanceState(savedInstanceState);
+                Intent startMain = new Intent(Intent.ACTION_MAIN);
+                startMain.addCategory(Intent.CATEGORY_HOME);
+                startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(startMain);
             }
         });
     }
