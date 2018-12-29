@@ -25,8 +25,11 @@
         <activity android:name=".SignInActivity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".QuizAcitivity" />
-        <activity android:name=".OptionsActivity"></activity>
-        <activity android:name=".Result"></activity>
+        <activity android:name=".OptionsActivity" />
+        <activity android:name=".Result" />
+        <activity
+            android:name=".rankingActivity"
+            android:label="@string/title_activity_ranking"></activity>
     </application>
 
 </manifest>

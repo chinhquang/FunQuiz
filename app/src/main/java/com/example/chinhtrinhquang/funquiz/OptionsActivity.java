@@ -10,6 +10,7 @@ public class OptionsActivity extends AppCompatActivity {
     Button btnPlay;
     Button btnSetting;
     Button btnHelp;
+    Button btnRank;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,10 +37,18 @@ public class OptionsActivity extends AppCompatActivity {
                 startActivity(intent3);
             }
         });
+        btnRank.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent4 = new Intent(getApplication(),rankingActivity.class);
+                startActivity(intent4);
+            }
+        });
     }
     void Inflate(){
         btnPlay = (Button) findViewById(R.id.btnPlay);
         btnSetting = (Button) findViewById(R.id.btnSetting);
         btnHelp = (Button) findViewById(R.id.btnHelp);
+        btnRank = (Button) findViewById(R.id.rankButton);
     }
 }

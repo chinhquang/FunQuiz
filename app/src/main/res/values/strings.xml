@@ -39,5 +39,7 @@
     <string name="judgment_toast">Cheating is wrong</string>
     <string name="logged_in">Logged in</string>
     <string name="back_home">Turning back to menu</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_ranking">rankingActivity</string>
 
 </resources>
