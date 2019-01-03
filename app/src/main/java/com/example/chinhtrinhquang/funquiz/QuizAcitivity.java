@@ -3,6 +3,7 @@ package com.example.chinhtrinhquang.funquiz;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -25,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.UUID;
@@ -55,7 +57,7 @@ public class QuizAcitivity extends AppCompatActivity {
     private String userID;
 
     private int count = 1;
-    private Question example = new Question("What's the joke","lake1","lake2","lake3","lake4",2,123);
+    private Question example = new Question("What's the joke?","You love me","I love you","Choose me","Don't choose me",3,123);
     private List<TrueFalse> mQuestionBank = new ArrayList<TrueFalse>();
 
 
@@ -64,6 +66,14 @@ public class QuizAcitivity extends AppCompatActivity {
 
     private int mCurrentIndex = 0;
     Bundle saved;
+    int random = new Random().nextInt(5); // used for generate new test
+
+    // set answer color
+    boolean one = false;
+    boolean two = false;
+    boolean three = false;
+    boolean four = false;
+
     private void updateQuestion() {
         String question = mQuestionBank.get(mCurrentIndex).getQuestion();
         mQuestionTextView.setText(question);
@@ -94,7 +104,7 @@ public class QuizAcitivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Toast.makeText(this,"username : "+SignInActivity.username + "\npassword :" + SignInActivity.password,Toast.LENGTH_LONG).show();
+        //Toast.makeText(this,"username : "+SignInActivity.username + "\npassword :" + SignInActivity.password,Toast.LENGTH_LONG).show();
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
 
@@ -156,8 +166,13 @@ public class QuizAcitivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getApplicationContext(), R.string.correct_toast, Toast.LENGTH_SHORT).show();
+                one = true;
+                mButton1.setBackgroundColor(Color.GRAY);
                 correct = checkAnswer(1);
 
+                if (two == true) {mButton2.setBackgroundColor(Color.DKGRAY); two = false;}
+                if (three == true) {mButton3.setBackgroundColor(Color.DKGRAY); three = false;}
+                if (four == true) {mButton4.setBackgroundColor(Color.DKGRAY); four = false;}
 
             }
         });
@@ -168,8 +183,13 @@ public class QuizAcitivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+                two = true;
+                mButton2.setBackgroundColor(Color.GRAY);
                 correct = checkAnswer(2);
 
+                if (one == true) {mButton1.setBackgroundColor(Color.DKGRAY); one = false;}
+                if (three == true) {mButton3.setBackgroundColor(Color.DKGRAY); three = false;}
+                if (four == true) {mButton4.setBackgroundColor(Color.DKGRAY); four = false;}
             }
         });
 
@@ -179,8 +199,13 @@ public class QuizAcitivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+                three = true;
+                mButton3.setBackgroundColor(Color.GRAY);
                 correct = checkAnswer(3);
 
+                if (two == true) {mButton2.setBackgroundColor(Color.DKGRAY); two = false;}
+                if (one == true) {mButton1.setBackgroundColor(Color.DKGRAY); one = false;}
+                if (four == true) {mButton4.setBackgroundColor(Color.DKGRAY); four = false;}
             }
         });
 
@@ -190,8 +215,13 @@ public class QuizAcitivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Toast.makeText(QuizActivity.this, R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
+                four = true;
+                mButton4.setBackgroundColor(Color.GRAY);
                 correct = checkAnswer(4);
 
+                if (two == true) {mButton2.setBackgroundColor(Color.DKGRAY); two = false;}
+                if (three == true) {mButton3.setBackgroundColor(Color.DKGRAY); three = false;}
+                if (one == true) {mButton1.setBackgroundColor(Color.DKGRAY); one = false;}
             }
         });
 
@@ -210,7 +240,7 @@ public class QuizAcitivity extends AppCompatActivity {
 
                 // turn to next question
                 if (count  <  20) {
-                    mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.size();
+                    mCurrentIndex = (mCurrentIndex + 1 + random) % mQuestionBank.size();
                     current = mCurrentIndex;
                     count++;
 
@@ -232,6 +262,12 @@ public class QuizAcitivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplication(), OptionsActivity.class);
                     startActivity(intent);
                 }
+
+
+               mButton2.setBackgroundColor(Color.DKGRAY); two = false;
+               mButton3.setBackgroundColor(Color.DKGRAY); three = false;
+               mButton4.setBackgroundColor(Color.DKGRAY); four = false;
+               mButton1.setBackgroundColor(Color.DKGRAY); one = false;
             }
         });
 
