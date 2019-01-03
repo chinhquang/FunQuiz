@@ -1,6 +1,9 @@
 package com.example.chinhtrinhquang.funquiz;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Rank {
+public class Rank implements Comparable<Rank> {
     public String username;
     public int score;
     public int rankpoint;
@@ -36,5 +39,24 @@ public class Rank {
         this.username = username;
         this.score = score;
         this.rankpoint = rankpoint;
+    }
+    @Override
+    public int compareTo(Rank f) {
+
+        if (this.score > f.score) {
+            return 1;
+        }
+        else if (this.score <  score) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
+
+    }
+
+    @Override
+    public String toString(){
+        return this.username;
     }
 }

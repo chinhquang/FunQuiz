@@ -10,6 +10,10 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +30,7 @@ public class rankingActivity extends AppCompatActivity {
     //Android layout
     private ListView lvRank;
     private ArrayList<Rank> ranks = new ArrayList<>();
+    private ArrayList<String> rankShower = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,22 +47,35 @@ public class rankingActivity extends AppCompatActivity {
                 progress.dismiss();
                 ranks.clear();
                 if (dataSnapshot.exists()) {
-                    Integer rank = 1;
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         try {
                             String username = ds.child("username").getValue(String.class);
                             int score = ds.child("score").getValue(int.class);
                             //String id, String uname, String pw, int score, int current
-                            Rank newRank = new Rank(username, score, rank);
+                            Rank newRank = new Rank(username, score, 0);
                             ranks.add(newRank);
-                            rank++;
                         } catch (Exception ex) {
                             Log.d(TAG, ex.getMessage());
                         }
                     }
+                    Collections.sort(ranks);
+                    Collections.sort(ranks, new Comparator<Rank>(){
+                        public int compare(Rank obj1, Rank obj2) {
+
+                            return Integer.valueOf(obj2.score).compareTo(Integer.valueOf(obj1.score)); // To compare integer values
+
+
+                        }
+                    });
+                    int rankPoint = 1;
+                    for(Rank rank : ranks){
+                        rank.rankpoint = rankPoint;
+                        rankPoint++;
+                        rankShower.add(rank.rankpoint + ". " + rank.username + ": " + rank.score);
+                    }
                 }
-                candidateListAdapter adapter = new candidateListAdapter(rankingActivity.this, R.layout.adapter_view_layout, ranks);
-                lvRank.setAdapter(adapter);
+                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(rankingActivity.this, android.R.layout.simple_list_item_1, rankShower);
+                lvRank.setAdapter(arrayAdapter);
             }
 
             @Override
