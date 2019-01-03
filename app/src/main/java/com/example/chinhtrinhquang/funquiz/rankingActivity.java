@@ -20,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -41,7 +42,8 @@ public class rankingActivity extends AppCompatActivity {
         progress.setMessage("Loading data... ");
         progress.show();
         DatabaseReference candidatesRef = FirebaseDatabase.getInstance().getReference("candidates");
-        candidatesRef.addValueEventListener(new ValueEventListener() {
+        Query query = candidatesRef.orderByChild("score").limitToLast(100);
+        query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 progress.dismiss();
@@ -58,20 +60,20 @@ public class rankingActivity extends AppCompatActivity {
                             Log.d(TAG, ex.getMessage());
                         }
                     }
-                    Collections.sort(ranks);
-                    Collections.sort(ranks, new Comparator<Rank>(){
-                        public int compare(Rank obj1, Rank obj2) {
-
-                            return Integer.valueOf(obj2.score).compareTo(Integer.valueOf(obj1.score)); // To compare integer values
-
-
-                        }
-                    });
+//                    Collections.sort(ranks);
+//                    Collections.sort(ranks, new Comparator<Rank>(){
+//                        public int compare(Rank obj1, Rank obj2) {
+//
+//                            return Integer.valueOf(obj2.score).compareTo(Integer.valueOf(obj1.score)); // To compare integer values
+//
+//
+//                        }
+//                    });
                     int rankPoint = 1;
-                    for(Rank rank : ranks){
-                        rank.rankpoint = rankPoint;
+                    for(int i = ranks.size() - 1; i >= 0; i--){
+                        ranks.get(i).rankpoint = rankPoint;
                         rankPoint++;
-                        rankShower.add(rank.rankpoint + ". " + rank.username + ": " + rank.score);
+                        rankShower.add(ranks.get(i).rankpoint + ". " + ranks.get(i).username + ": " + ranks.get(i).score);
                     }
                 }
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(rankingActivity.this, android.R.layout.simple_list_item_1, rankShower);
