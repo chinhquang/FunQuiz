@@ -68,4 +68,5 @@ public class Candidate {
         this.cquiz = 0;
     }
 
+
 }

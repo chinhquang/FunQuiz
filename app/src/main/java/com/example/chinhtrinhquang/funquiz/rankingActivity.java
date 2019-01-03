@@ -25,8 +25,7 @@ public class rankingActivity extends AppCompatActivity {
     private static final String TAG = "rankingActivity";
     //Android layout
     private ListView lvRank;
-
-    private ArrayList<String> Score = new ArrayList<>();
+    private ArrayList<Rank> ranks = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,22 +40,24 @@ public class rankingActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 progress.dismiss();
-                Score.clear();
+                ranks.clear();
                 if (dataSnapshot.exists()) {
+                    Integer rank = 1;
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         try {
                             String username = ds.child("username").getValue(String.class);
-                            Integer score = ds.child("score").getValue(Integer.class);
+                            int score = ds.child("score").getValue(int.class);
                             //String id, String uname, String pw, int score, int current
-                            Score.add(username);
-                            Score.add(score.toString());
+                            Rank newRank = new Rank(username, score, rank);
+                            ranks.add(newRank);
+                            rank++;
                         } catch (Exception ex) {
                             Log.d(TAG, ex.getMessage());
                         }
                     }
                 }
-                ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(rankingActivity.this, android.R.layout.simple_list_item_1, Score);
-                lvRank.setAdapter(arrayAdapter);
+                candidateListAdapter adapter = new candidateListAdapter(rankingActivity.this, R.layout.adapter_view_layout, ranks);
+                lvRank.setAdapter(adapter);
             }
 
             @Override

@@ -27,9 +27,9 @@
         <activity android:name=".QuizAcitivity" />
         <activity android:name=".OptionsActivity" />
         <activity android:name=".Result" />
-        <activity
-            android:name=".rankingActivity"
-            android:label="@string/title_activity_ranking"></activity>
+        <activity android:name=".rankingActivity" />
+        <activity android:name=".Help" />
+        <activity android:name=".Settings" />
     </application>
 
 </manifest>
