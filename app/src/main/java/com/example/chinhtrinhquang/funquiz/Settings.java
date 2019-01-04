@@ -8,6 +8,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -22,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
     private SeekBar sbVolume;
@@ -30,7 +34,7 @@ public class Settings extends AppCompatActivity {
     private int brightness;
     private ContentResolver contentResolver;
     private Window window;
-    private Spinner langSpinner;
+    private boolean success = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,8 +42,8 @@ public class Settings extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         VolumeControl();
-        //BrightnessControl();
-        //LangSpinnerControl();
+        BrightnessControl();
+
     }
 
     private void VolumeControl() {
@@ -103,11 +107,38 @@ public class Settings extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                android.provider.Settings.System.putInt(contentResolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
-                WindowManager.LayoutParams layoutParams = window.getAttributes();
-                layoutParams.screenBrightness = brightness / (float) 255;
-                window.setAttributes(layoutParams);
+//                boolean value = true;
+//                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    value = android.provider.Settings.System.canWrite(getApplicationContext());
+//                    if(value == false){
+//                        Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+//                        intent.setData((Uri.parse("package: " + getApplicationContext().getPackageName())));
+//                        startActivityForResult(intent, 1000);
+//                    } else {
+//                        success = true;
+//                    }
+//                }
+//                if (success == true) {
+//                    android.provider.Settings.System.putInt(Settings.this.contentResolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
+//                    WindowManager.LayoutParams layoutParams = window.getAttributes();
+//                    layoutParams.screenBrightness = brightness / (float) 255;
+//                    window.setAttributes(layoutParams);
+//                }
             }
         });
     }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        if(requestCode == 1000) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                boolean value = android.provider.Settings.System.canWrite(getApplicationContext());
+//                if(value) {
+//                    success = true;
+//                } else {
+//                    Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        }
+//    }
 }
