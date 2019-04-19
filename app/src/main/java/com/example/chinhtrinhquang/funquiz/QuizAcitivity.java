@@ -238,6 +238,8 @@ public class QuizAcitivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), R.string.incorrect_toast, Toast.LENGTH_SHORT).show();
                 }
 
+                // reset correct value
+                correct = false;
                 // turn to next question
                 if (count  <  20) {
                     mCurrentIndex = (mCurrentIndex + 1 + random) % mQuestionBank.size();

@@ -22,7 +22,7 @@
     <string name="answer3">N.3</string>
     <string name="answer4">N.4</string>
 
-    <string name="correct_toast">Corect</string>
+    <string name="correct_toast">Correct</string>
     <string name="incorrect_toast">Incorrect</string>
     <string name="next_button">Next</string>
     <string name="pause_button">Pause</string>
